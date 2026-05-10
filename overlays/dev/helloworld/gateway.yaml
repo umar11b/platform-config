@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: helloworld-gateway
+  namespace: istio-ingress
+spec:
+  selector:
+    istio: ingress
+  servers:
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: helloworld-tls
+      hosts:
+        - hello.lab.DOMAIN.com  # replace with your domain
