@@ -45,6 +45,19 @@ spec:
             limits:
               cpu: 100m
               memory: 128Mi
+        cleanupJobs:
+          admissionReports:
+            image:
+              registry: registry.bitnami.com
+          clusterAdmissionReports:
+            image:
+              registry: registry.bitnami.com
+          ephemeralReports:
+            image:
+              registry: registry.bitnami.com
+          clusterEphemeralReports:
+            image:
+              registry: registry.bitnami.com
   destination:
     server: https://kubernetes.default.svc
     namespace: kyverno
