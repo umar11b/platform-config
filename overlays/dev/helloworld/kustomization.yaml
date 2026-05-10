@@ -8,7 +8,6 @@ resources:
   - gateway.yaml
   - certificate.yaml
   - clusterissuer.yaml
-  - cloudflare-externalsecret.yaml
 images:
-  - name: REGION-docker.pkg.dev/PROJECT_ID/helloworld/helloworld
+  - name: us-central1-docker.pkg.dev/gke-infrastructure-493002/platform/helloworld
     newTag: latest

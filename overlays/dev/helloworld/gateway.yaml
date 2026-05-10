@@ -15,4 +15,4 @@ spec:
         mode: SIMPLE
         credentialName: helloworld-tls
       hosts:
-        - hello.lab.DOMAIN.com  # replace with your domain
+        - hello.lab.umarzaman.ca

@@ -5,7 +5,7 @@ metadata:
   namespace: helloworld
 spec:
   hosts:
-    - hello.lab.DOMAIN.com  # replace with your domain
+    - hello.lab.umarzaman.ca
   gateways:
     - istio-ingress/helloworld-gateway
   http:

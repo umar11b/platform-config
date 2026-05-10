@@ -6,8 +6,8 @@ metadata:
 spec:
   secretName: helloworld-tls
   dnsNames:
-    - hello.lab.DOMAIN.com  # replace with your domain
-    - "*.lab.DOMAIN.com"
+    - hello.lab.umarzaman.ca
+    - "*.lab.umarzaman.ca"
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer

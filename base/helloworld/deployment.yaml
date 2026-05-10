@@ -16,7 +16,7 @@ spec:
       serviceAccountName: helloworld
       containers:
         - name: helloworld
-          image: REGION-docker.pkg.dev/PROJECT_ID/helloworld/helloworld:latest
+          image: us-central1-docker.pkg.dev/gke-infrastructure-493002/platform/helloworld:latest
           ports:
             - containerPort: 8080
           env:
