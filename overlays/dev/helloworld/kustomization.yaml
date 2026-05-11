@@ -11,6 +11,7 @@ resources:
   - clusterissuer.yaml
   - peerauthentication.yaml
   - authorizationpolicy.yaml
+  - authorizationpolicy-metrics.yaml
 images:
   - name: us-central1-docker.pkg.dev/gke-infrastructure-493002/platform/helloworld
     newTag: b60462510df763e5b98575d2ce5dc09f2db7a6f3

@@ -4,5 +4,11 @@ metadata:
   name: helloworld-mtls
   namespace: helloworld
 spec:
+  selector:
+    matchLabels:
+      app: helloworld
   mtls:
     mode: STRICT
+  portLevelMtls:
+    8080:
+      mode: PERMISSIVE
