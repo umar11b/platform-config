@@ -40,3 +40,32 @@ spec:
             summary: "helloworld slow burn rate exceeding SLO"
             description: "Error budget burn rate is {{ $value | humanizePercentage }} over the last 6h (threshold: 6x). SLO: 99% of /hello under 200ms."
             runbook: "https://github.com/umar11b/platform-config/blob/main/docs/runbooks/helloworld-slo.md"
+
+    - name: helloworld.availability
+      rules:
+        # SLO: 99% of /hello requests succeed (non-5xx)
+        # Fast burn: 14x over 5m window — fires within 2m of sustained 14%+ error rate
+        - alert: HelloworldHighErrorBurnRate
+          expr: |
+            job:helloworld_request_error_rate:ratio_rate5m > (14 * 0.01)
+          for: 2m
+          labels:
+            severity: critical
+            slo: helloworld-availability
+          annotations:
+            summary: "helloworld error rate fast burn — SLO at risk"
+            description: "Error rate is {{ $value | humanizePercentage }} over the last 5m (threshold: 14%). SLO: 99% of /hello requests succeed."
+            runbook: "https://github.com/umar11b/platform-config/blob/main/docs/runbooks/helloworld-slo.md"
+
+        # Slow burn: 6x over 1h
+        - alert: HelloworldSlowErrorBurnRate
+          expr: |
+            job:helloworld_request_error_rate:ratio_rate1h > (6 * 0.01)
+          for: 15m
+          labels:
+            severity: warning
+            slo: helloworld-availability
+          annotations:
+            summary: "helloworld error rate slow burn — SLO degrading"
+            description: "Error rate is {{ $value | humanizePercentage }} over the last 1h (threshold: 6%). SLO: 99% of /hello requests succeed."
+            runbook: "https://github.com/umar11b/platform-config/blob/main/docs/runbooks/helloworld-slo.md"
