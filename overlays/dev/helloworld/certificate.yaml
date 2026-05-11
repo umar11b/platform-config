@@ -6,7 +6,6 @@ metadata:
 spec:
   secretName: helloworld-tls
   dnsNames:
-    - hello.lab.umarzaman.ca
     - "*.lab.umarzaman.ca"
   issuerRef:
     name: letsencrypt-prod
