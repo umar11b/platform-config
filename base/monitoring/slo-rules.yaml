@@ -1,0 +1,43 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: helloworld-slo
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: helloworld.slo
+      interval: 30s
+      rules:
+        # SLI: fraction of /hello requests completing under 200ms
+        - record: job:helloworld_request_latency_sli:ratio_rate5m
+          expr: |
+            sum(rate(helloworld_request_duration_seconds_bucket{handler="hello",le="0.2"}[5m]))
+            /
+            sum(rate(helloworld_request_duration_seconds_count{handler="hello"}[5m]))
+
+        - record: job:helloworld_request_latency_sli:ratio_rate30m
+          expr: |
+            sum(rate(helloworld_request_duration_seconds_bucket{handler="hello",le="0.2"}[30m]))
+            /
+            sum(rate(helloworld_request_duration_seconds_count{handler="hello"}[30m]))
+
+        - record: job:helloworld_request_latency_sli:ratio_rate1h
+          expr: |
+            sum(rate(helloworld_request_duration_seconds_bucket{handler="hello",le="0.2"}[1h]))
+            /
+            sum(rate(helloworld_request_duration_seconds_count{handler="hello"}[1h]))
+
+        - record: job:helloworld_request_latency_sli:ratio_rate6h
+          expr: |
+            sum(rate(helloworld_request_duration_seconds_bucket{handler="hello",le="0.2"}[6h]))
+            /
+            sum(rate(helloworld_request_duration_seconds_count{handler="hello"}[6h]))
+
+        # Error rate: non-2xx responses
+        - record: job:helloworld_request_error_rate:ratio_rate5m
+          expr: |
+            sum(rate(helloworld_requests_total{handler="hello",status_code!~"2.."}[5m]))
+            /
+            sum(rate(helloworld_requests_total{handler="hello"}[5m]))

@@ -1,0 +1,7 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - servicemonitor.yaml
+  - slo-rules.yaml
+  - burn-rate-alerts.yaml
+  - dashboard-configmap.yaml

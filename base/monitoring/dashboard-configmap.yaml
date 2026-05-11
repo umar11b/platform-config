@@ -1,0 +1,126 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: helloworld-dashboard
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  helloworld.json: |
+    {
+      "uid": "helloworld",
+      "title": "helloworld",
+      "tags": ["helloworld", "golden-signals"],
+      "timezone": "browser",
+      "refresh": "30s",
+      "time": { "from": "now-1h", "to": "now" },
+      "panels": [
+        {
+          "id": 1,
+          "title": "Request Rate",
+          "type": "timeseries",
+          "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "sum(rate(helloworld_requests_total{handler=\"hello\"}[5m]))",
+              "legendFormat": "req/s"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": { "unit": "reqps", "color": { "mode": "palette-classic" } }
+          }
+        },
+        {
+          "id": 2,
+          "title": "Error Rate",
+          "type": "timeseries",
+          "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "sum(rate(helloworld_requests_total{handler=\"hello\",status_code!~\"2..\"}[5m])) / sum(rate(helloworld_requests_total{handler=\"hello\"}[5m]))",
+              "legendFormat": "error rate"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": { "unit": "percentunit", "color": { "mode": "fixed", "fixedColor": "red" },
+              "thresholds": { "steps": [{"color":"green","value":null},{"color":"red","value":0.01}] }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "title": "Latency Percentiles",
+          "type": "timeseries",
+          "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.50, sum(rate(helloworld_request_duration_seconds_bucket{handler=\"hello\"}[5m])) by (le))",
+              "legendFormat": "p50"
+            },
+            {
+              "expr": "histogram_quantile(0.95, sum(rate(helloworld_request_duration_seconds_bucket{handler=\"hello\"}[5m])) by (le))",
+              "legendFormat": "p95"
+            },
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(helloworld_request_duration_seconds_bucket{handler=\"hello\"}[5m])) by (le))",
+              "legendFormat": "p99"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": { "unit": "s", "color": { "mode": "palette-classic" } }
+          }
+        },
+        {
+          "id": 4,
+          "title": "SLO Compliance (% requests under 200ms)",
+          "type": "gauge",
+          "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "job:helloworld_request_latency_sli:ratio_rate5m * 100",
+              "legendFormat": "SLI"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "min": 0, "max": 100,
+              "thresholds": {
+                "steps": [
+                  { "color": "red", "value": null },
+                  { "color": "yellow", "value": 98 },
+                  { "color": "green", "value": 99 }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "title": "Pod CPU Usage",
+          "type": "timeseries",
+          "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"helloworld\",container=\"helloworld\"}[5m])) by (pod)",
+              "legendFormat": "{{ pod }}"
+            }
+          ],
+          "fieldConfig": { "defaults": { "unit": "short" } }
+        },
+        {
+          "id": 6,
+          "title": "Pod Memory Usage",
+          "type": "timeseries",
+          "gridPos": { "x": 12, "y": 16, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "sum(container_memory_working_set_bytes{namespace=\"helloworld\",container=\"helloworld\"}) by (pod)",
+              "legendFormat": "{{ pod }}"
+            }
+          ],
+          "fieldConfig": { "defaults": { "unit": "bytes" } }
+        }
+      ],
+      "schemaVersion": 38
+    }

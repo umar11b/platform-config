@@ -8,6 +8,8 @@ resources:
   - gateway.yaml
   - certificate.yaml
   - clusterissuer.yaml
+  - peerauthentication.yaml
+  - authorizationpolicy.yaml
 images:
   - name: us-central1-docker.pkg.dev/gke-infrastructure-493002/platform/helloworld
     newTag: latest

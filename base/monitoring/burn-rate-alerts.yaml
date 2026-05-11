@@ -1,0 +1,42 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: helloworld-burn-rate
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: helloworld.burnrate
+      rules:
+        # SLO: 99% of /hello requests under 200ms over 30 days
+        # Error budget: 1% = 0.01
+        # Fast burn: 14x over 1h (burns 14% of hourly budget)
+        - alert: HelloworldHighBurnRate
+          expr: |
+            (
+              1 - job:helloworld_request_latency_sli:ratio_rate1h
+            ) > (14 * 0.01)
+          for: 2m
+          labels:
+            severity: critical
+            slo: helloworld-latency
+          annotations:
+            summary: "helloworld fast burn rate exceeding SLO"
+            description: "Error budget burn rate is {{ $value | humanizePercentage }} over the last 1h (threshold: 14x). SLO: 99% of /hello under 200ms."
+            runbook: "https://github.com/umar11b/platform-config/blob/main/docs/runbooks/helloworld-slo.md"
+
+        # Slow burn: 6x over 6h (burns 36% of daily budget)
+        - alert: HelloworldSlowBurnRate
+          expr: |
+            (
+              1 - job:helloworld_request_latency_sli:ratio_rate6h
+            ) > (6 * 0.01)
+          for: 15m
+          labels:
+            severity: warning
+            slo: helloworld-latency
+          annotations:
+            summary: "helloworld slow burn rate exceeding SLO"
+            description: "Error budget burn rate is {{ $value | humanizePercentage }} over the last 6h (threshold: 6x). SLO: 99% of /hello under 200ms."
+            runbook: "https://github.com/umar11b/platform-config/blob/main/docs/runbooks/helloworld-slo.md"
