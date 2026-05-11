@@ -20,7 +20,7 @@ spec:
           attestors:
             - entries:
                 - keyless:
-                    subjectRegExp: "^https://github.com/umar11b/helloworld/.*@refs/heads/main$"
+                    subjectRegExp: "^https://github.com/umar11b/platform-helloworld/.*@refs/heads/main$"
                     issuer: "https://token.actions.githubusercontent.com"
                     rekor:
                       url: https://rekor.sigstore.dev
