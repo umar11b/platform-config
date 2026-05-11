@@ -12,4 +12,4 @@ resources:
   - authorizationpolicy.yaml
 images:
   - name: us-central1-docker.pkg.dev/gke-infrastructure-493002/platform/helloworld
-    newTag: latest
+    newTag: b60462510df763e5b98575d2ce5dc09f2db7a6f3
