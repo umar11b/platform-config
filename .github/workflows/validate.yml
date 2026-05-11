@@ -1,0 +1,72 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  conftest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Install conftest
+        run: |
+          VERSION=0.56.0
+          curl -sLO "https://github.com/open-policy-agent/conftest/releases/download/v${VERSION}/conftest_${VERSION}_Linux_x86_64.tar.gz"
+          tar xzf "conftest_${VERSION}_Linux_x86_64.tar.gz"
+          sudo mv conftest /usr/local/bin/
+
+      - name: Build dev overlay
+        run: kustomize build overlays/dev/helloworld -o /tmp/manifests.yaml
+
+      - name: Policy checks
+        run: conftest test /tmp/manifests.yaml --policy policy/ --all-namespaces
+
+      - name: Policy unit tests
+        run: conftest verify --policy policy/
+
+  dry-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Create kind cluster
+        uses: helm/kind-action@v1
+
+      - name: Add helm repos
+        run: |
+          helm repo add jetstack https://charts.jetstack.io
+          helm repo add istio https://istio-release.storage.googleapis.com/charts
+          helm repo add external-secrets https://charts.external-secrets.io
+          helm repo update
+
+      - name: Install CRDs
+        run: |
+          # cert-manager CRDs (standalone manifest, no webhooks registered)
+          kubectl apply --server-side -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.3/cert-manager.crds.yaml
+
+          # Istio CRDs via base chart; disable config-validation webhook for CI
+          helm install istio-base istio/base \
+            --namespace istio-system --create-namespace \
+            --version 1.24.3 \
+            --set defaultRevision=default \
+            --set global.configValidation=false
+
+          # ESO CRDs only (no controllers, no webhooks)
+          helm template external-secrets external-secrets/external-secrets \
+            --version 0.10.5 --namespace external-secrets \
+            | yq 'select(.kind == "CustomResourceDefinition")' \
+            | kubectl apply --server-side -f -
+
+      - name: Dry-run apply dev overlay
+        run: |
+          kustomize build overlays/dev/helloworld \
+            | kubectl apply --dry-run=server -f -
