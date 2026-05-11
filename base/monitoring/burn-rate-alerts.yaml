@@ -9,7 +9,7 @@ spec:
   groups:
     - name: helloworld.burnrate
       rules:
-        # SLO: 99% of /hello requests under 200ms over 30 days
+        # SLO: 99% of /hello requests under 100ms over 30 days
         # Error budget: 1% = 0.01
         # Fast burn: 14x over 1h (burns 14% of hourly budget)
         - alert: HelloworldHighBurnRate
@@ -23,7 +23,7 @@ spec:
             slo: helloworld-latency
           annotations:
             summary: "helloworld fast burn rate exceeding SLO"
-            description: "Error budget burn rate is {{ $value | humanizePercentage }} over the last 1h (threshold: 14x). SLO: 99% of /hello under 200ms."
+            description: "Error budget burn rate is {{ $value | humanizePercentage }} over the last 1h (threshold: 14x). SLO: 99% of /hello under 100ms."
             runbook: "https://github.com/umar11b/platform-config/blob/main/docs/runbooks/helloworld-slo.md"
 
         # Slow burn: 6x over 6h (burns 36% of daily budget)
@@ -38,7 +38,7 @@ spec:
             slo: helloworld-latency
           annotations:
             summary: "helloworld slow burn rate exceeding SLO"
-            description: "Error budget burn rate is {{ $value | humanizePercentage }} over the last 6h (threshold: 6x). SLO: 99% of /hello under 200ms."
+            description: "Error budget burn rate is {{ $value | humanizePercentage }} over the last 6h (threshold: 6x). SLO: 99% of /hello under 100ms."
             runbook: "https://github.com/umar11b/platform-config/blob/main/docs/runbooks/helloworld-slo.md"
 
     - name: helloworld.availability

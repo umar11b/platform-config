@@ -10,28 +10,28 @@ spec:
     - name: helloworld.slo
       interval: 30s
       rules:
-        # SLI: fraction of /hello requests completing under 200ms
+        # SLI: fraction of /hello requests completing under 100ms
         - record: job:helloworld_request_latency_sli:ratio_rate5m
           expr: |
-            sum(rate(helloworld_request_duration_seconds_bucket{handler="hello",le="0.2"}[5m]))
+            sum(rate(helloworld_request_duration_seconds_bucket{handler="hello",le="0.1"}[5m]))
             /
             sum(rate(helloworld_request_duration_seconds_count{handler="hello"}[5m]))
 
         - record: job:helloworld_request_latency_sli:ratio_rate30m
           expr: |
-            sum(rate(helloworld_request_duration_seconds_bucket{handler="hello",le="0.2"}[30m]))
+            sum(rate(helloworld_request_duration_seconds_bucket{handler="hello",le="0.1"}[30m]))
             /
             sum(rate(helloworld_request_duration_seconds_count{handler="hello"}[30m]))
 
         - record: job:helloworld_request_latency_sli:ratio_rate1h
           expr: |
-            sum(rate(helloworld_request_duration_seconds_bucket{handler="hello",le="0.2"}[1h]))
+            sum(rate(helloworld_request_duration_seconds_bucket{handler="hello",le="0.1"}[1h]))
             /
             sum(rate(helloworld_request_duration_seconds_count{handler="hello"}[1h]))
 
         - record: job:helloworld_request_latency_sli:ratio_rate6h
           expr: |
-            sum(rate(helloworld_request_duration_seconds_bucket{handler="hello",le="0.2"}[6h]))
+            sum(rate(helloworld_request_duration_seconds_bucket{handler="hello",le="0.1"}[6h]))
             /
             sum(rate(helloworld_request_duration_seconds_count{handler="hello"}[6h]))
 
