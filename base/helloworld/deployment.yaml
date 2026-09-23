@@ -16,7 +16,10 @@ spec:
       serviceAccountName: helloworld
       containers:
         - name: helloworld
-          image: helloworld:0.0.0 # placeholder: set to an arm64 image for the Pi
+          image: hashicorp/http-echo:1.0.0
+          args:
+            - -listen=:8080
+            - -text=hello from edgepi
           ports:
             - containerPort: 8080
           resources:
