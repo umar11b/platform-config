@@ -16,15 +16,9 @@ spec:
       serviceAccountName: helloworld
       containers:
         - name: helloworld
-          image: us-central1-docker.pkg.dev/gke-infrastructure-493002/platform/helloworld:latest
+          image: helloworld:0.0.0 # placeholder: set to an arm64 image for the Pi
           ports:
             - containerPort: 8080
-          env:
-            - name: HELLO_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: helloworld-secret
-                  key: value
           resources:
             requests:
               cpu: 50m
