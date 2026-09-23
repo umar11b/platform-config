@@ -1,0 +1,23 @@
+# Downsized requests so the Harness GitOps agent fits on the single-node Pi.
+# Layered on top of override.yaml: helm install ... -f harness/override.yaml -f harness/harness-gitops-pi.yaml
+argo-cd:
+  controller:
+    resources:
+      requests: {cpu: 250m, memory: 512Mi}
+      limits: {cpu: "1", memory: 1Gi}
+  repoServer:
+    resources:
+      requests: {cpu: 250m, memory: 512Mi}
+      limits: {cpu: "1", memory: 1Gi}
+  applicationSet:
+    resources:
+      requests: {cpu: 100m, memory: 128Mi}
+      limits: {cpu: 500m, memory: 512Mi}
+  redis:
+    resources:
+      requests: {cpu: 100m, memory: 128Mi}
+      limits: {cpu: 500m, memory: 512Mi}
+agent:
+  resources:
+    requests: {cpu: 100m, memory: 128Mi}
+    limits: {cpu: 500m, memory: 512Mi}

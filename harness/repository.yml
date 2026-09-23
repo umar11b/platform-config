@@ -1,0 +1,6 @@
+# harness create gitops_repository harnessagent/platformconfig -f harness/repository.yml --upsert
+repo:
+  name: platform-config
+  repo: https://github.com/umar11b/platform-config
+  type: git
+  connectionType: HTTPS_ANONYMOUS

@@ -1,0 +1,15 @@
+# harness create gitops_application harnessagent -f harness/application.yml --cluster incluster --repo platformconfig
+metadata:
+  name: helloworld
+spec:
+  source:
+    repoURL: https://github.com/umar11b/platform-config
+    path: base/helloworld
+    targetRevision: main
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: helloworld
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

@@ -1,2 +1,3 @@
 .DS_Store
 *.swp
+harness/override.yaml
